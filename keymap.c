@@ -32,33 +32,48 @@ static char     keylog_str[KEYLOGGER_LENGTH + 1] = {"\n"};
       KC_GRV, CTL_T(K21), K22,  K23,     K24,     K25,     KC_NO,   ADJUST,       ADJUST,   KC_NO,   K26,     K27,     K28,     K29, RCTL_T(K2A), KC_AMPR, \
                                  LALT(LGUI(KC_A)), OS_LALT, KC_LOWER,  KC_PEJ_SPC,  KC_PEJ_BSPC,     KC_PEJ_TAB, KC_ENT,  KC_RAISE, MO(_RAISE), KC_MUTE \
     )
+
+#define LAYOUT_kyria_homerow_base( \
+    K01, K02, K03, K04, K05, K06, K07, K08, K09, K0A, \
+    K11, K12, K13, K14, K15, K16, K17, K18, K19, K1A, \
+    K21, K22, K23, K24, K25, K26, K27, K28, K29, K2A  \
+  ) \
+  LAYOUT_homerow_wrapper( \
+      KC_ESC,  K01,     K02,     K03,     K04,     K05,                                             K06,     K07,     K08,     K09,     K0A,     KC_LBRC, \
+      KC_BSLS, LSFT_T(K11), LGUI_T(K12),LALT_T(K13),LCTL_T(K14),K15,                                K16,LCTL_T(K17),LALT_T(K18),LGUI_T(K19),LSFT_T(K1A), KC_QUOT, \
+      KC_GRV, CTL_T(K21), K22,  K23,     K24,     K25,     KC_NO,   ADJUST,       ADJUST,   KC_NO,   K26,     K27,     K28,     K29, RCTL_T(K2A), KC_AMPR, \
+                                 LALT(LGUI(KC_A)), OS_LALT, KC_LOWER,  KC_PEJ_SPC,  KC_PEJ_BSPC,     KC_PEJ_TAB, KC_ENT,  KC_RAISE, MO(_RAISE), KC_MUTE \
+    )
+
+
 /* Re-pass though to allow templates to be used */
 #define LAYOUT_kyria_base_wrapper(...)       LAYOUT_kyria_base(__VA_ARGS__)
+#define LAYOUT_kyria_home_wrapper(...)       LAYOUT_kyria_homerow_base(__VA_ARGS__)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-    [_QWERTY] = LAYOUT_kyria_base_wrapper(
-        ___________PEJER_QWERTY_L1_________________, ___________PEJER_QWERTY_R1_________________,
-        ___________PEJER_QWERTY_L2_________________, ___________PEJER_QWERTY_R2_________________,
-        ___________PEJER_QWERTY_L3_________________, ___________PEJER_QWERTY_R3_________________
+    [_QWERTY] = LAYOUT_kyria_home_wrapper(
+                 ___________PEJER_QWERTY_L1_________________,                                               ___________PEJER_QWERTY_R1_________________,
+                 ___________PEJER_QWERTY_L2_________________,                                               ___________PEJER_QWERTY_R2_________________,
+                 ___________PEJER_QWERTY_L3_________________,                                               ___________PEJER_QWERTY_R3_________________
     ),
     [_SYMBOL0] = LAYOUT_wrapper(
-        KC_ESC,___________PEJER_SYMBOL0_L1________________, ___________PEJER_SYMBOL0_R1________________,KC_PEJ_QUE,
-        KC_BSLS,___________PEJER_SYMBOL0_L2________________, ___________PEJER_SYMBOL0_R2________________,KC_QUOT,
-        KC_LSFT,___________PEJER_SYMBOL0_L3________________,KC_NO,ADJUST,ADJUST,KC_NO, ___________PEJER_SYMBOL0_R3________________, KC_AMPR,
+        KC_ESC,  ___________PEJER_SYMBOL0_L1________________,                                               ___________PEJER_SYMBOL0_R1________________,KC_PEJ_QUE,
+        KC_BSLS, ___________PEJER_SYMBOL0_L2________________,                                               ___________PEJER_SYMBOL0_R2________________,KC_QUOT,
+        KC_LSFT, ___________PEJER_SYMBOL0_L3________________,KC_NO, ADJUST,               ADJUST,KC_NO,     ___________PEJER_SYMBOL0_R3________________, KC_AMPR,
                                  KC_MUTE, OS_LALT, KC_LOWER,  KC_SPC,  KC_PEJ_BSPC,     KC_PEJ_TAB, KC_ENT,  KC_RAISE, ADJUST, MO(_RAISE) \
     ),
     [_SYMBOL1] = LAYOUT_wrapper(
-        KC_ESC,___________PEJER_SYMBOL1_L1________________, ___________PEJER_SYMBOL1_R1________________,KC_MINS,
-        KC_BSLS,___________PEJER_SYMBOL1_L2________________, ___________PEJER_SYMBOL1_R2________________,KC_PRINT_TRUTH,
-        KC_GRV,___________PEJER_SYMBOL1_L3________________, KC_NO,ADJUST,ADJUST,KC_NO,___________PEJER_SYMBOL1_R3________________,KC_XXXXX,
+        KC_ESC,  ___________PEJER_SYMBOL1_L1________________,                                               ___________PEJER_SYMBOL1_R1________________,KC_MINS,
+        KC_BSLS, ___________PEJER_SYMBOL1_L2________________,                                               ___________PEJER_SYMBOL1_R2________________,KC_PRINT_TRUTH,
+        KC_GRV,  ___________PEJER_SYMBOL1_L3________________, KC_NO,ADJUST,             ADJUST,KC_NO,       ___________PEJER_SYMBOL1_R3________________,KC_XXXXX,
 
                                  KC_MUTE, OS_LALT, KC_LOWER,  KC_SPC,  KC_PEJ_BSPC,     KC_PEJ_TAB, KC_ENT,  KC_RAISE,  MO(_RAISE), MO(_RAISE)  \
     ),
     [_NUMBERS] = LAYOUT_wrapper(
-        KC_ESC,___________PEJER_NUMBER_L1_________________, ___________PEJER_NUMBER_R1_________________,KC_MINS,
-        KC_CTLTB,___________PEJER_NUMBER_L2_________________, ___________PEJER_NUMBER_R2_________________,KC_XXXXX,
-        KC_LSFT,___________PEJER_NUMBER_L3_________________,KC_NO,ADJUST,ADJUST,KC_NO, ___________PEJER_NUMBER_R3_________________,KC_XXXXX,
+        KC_ESC,  ___________PEJER_NUMBER_L1_________________,                                               ___________PEJER_NUMBER_R1_________________,KC_MINS,
+        KC_CTLTB,___________PEJER_NUMBER_L2_________________,                                               ___________PEJER_NUMBER_R2_________________,KC_XXXXX,
+        KC_LSFT, ___________PEJER_NUMBER_L3_________________,KC_NO,ADJUST,              ADJUST,KC_NO,       ___________PEJER_NUMBER_R3_________________,KC_XXXXX,
 
                                  KC_MUTE, OS_LALT, KC_LOWER,  KC_SPC,  KC_PEJ_BSPC,     KC_PEJ_TAB, KC_ENT,  KC_RAISE, KC_0, MO(_RAISE) \
     ),
