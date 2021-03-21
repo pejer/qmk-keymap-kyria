@@ -2,17 +2,12 @@
 
 uint8_t is_master;
 
-#ifdef OLED_DRIVER_ENABLE
-#    define KEYLOGGER_LENGTH 10
-static char     keylog_str[KEYLOGGER_LENGTH + 1] = {"\n"};
-// clang-format off
-#endif
-
 #ifndef UNICODE_ENABLE
 #    define UC(x) KC_NO
 #endif
 
 /*
+ * Shamefully stolen from Drashna.
  * The `LAYOUT_kyria_base` macro is a template to allow the use of identical
  * modifiers for the default layouts (eg QWERTY, Colemak, Dvorak, etc), so
  * that there is no need to set them up for each layout, and modify all of
@@ -46,7 +41,9 @@ static char     keylog_str[KEYLOGGER_LENGTH + 1] = {"\n"};
     )
 
 
-/* Re-pass though to allow templates to be used */
+/* 
+ * Shamefully stolen from Drashna.
+ * Re-pass though to allow templates to be used */
 #define LAYOUT_kyria_base_wrapper(...)       LAYOUT_kyria_base(__VA_ARGS__)
 #define LAYOUT_kyria_home_wrapper(...)       LAYOUT_kyria_homerow_base(__VA_ARGS__)
 
@@ -86,6 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 report_mouse_t mouse_report;
 layer_state_t layer_state_set_keymap(layer_state_t state) {
+#ifdef PRIMARY_SPLIT
   switch (get_highest_layer(state)) {
       case _RAISE:
           trackball_setrgb(0,48,0);
@@ -103,6 +101,7 @@ layer_state_t layer_state_set_keymap(layer_state_t state) {
           trackball_setrgb(0,0,0);
           break;
     }
+#endif
   return state;
 }
 uint8_t pej_scroll_speed = 8;
@@ -117,6 +116,7 @@ bool process_record_keymap(uint16_t keycode, keyrecord_t *record) {
 #endif
     }
     switch(keycode){
+#ifdef PRIMARY_SPLIT
       case KC_BTN1:
         mouse_report = pointing_device_get_report();
          if (record->event.pressed)
@@ -169,121 +169,15 @@ bool process_record_keymap(uint16_t keycode, keyrecord_t *record) {
          pointing_device_set_report(mouse_report);
          pointing_device_send();
        break;
+#endif
     }
     return true;
 }
 void matrix_init_keymap(void) { is_master = (uint8_t)is_keyboard_master(); }
 
 #ifdef OLED_DRIVER_ENABLE
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_180; }
-
-
-void render_keylogger_status(void) {
-    oled_write_P(PSTR("Keylogger: "), false);
-    oled_write(keylog_str, false);
-}
-
-void render_default_layer_state(void) {
-    oled_write_P(PSTR("Layout: "), false);
-    switch (get_highest_layer(default_layer_state)) {
-        case _QWERTY:
-            oled_write_ln_P(PSTR("Qwerty "), false);
-            break;
-        case _DVORAK:
-            oled_write_ln_P(PSTR("Dvorak"), false);
-            break;
-        case _WORKMAN:
-            oled_write_ln_P(PSTR("Workman"), false);
-            break;
-        case _NORMAN:
-            oled_write_ln_P(PSTR("Norman"), false);
-            break;
-        case _MALTRON:
-            oled_write_ln_P(PSTR("Maltron"), false);
-            break;
-        case _EUCALYN:
-            oled_write_ln_P(PSTR("Eucalyn"), false);
-            break;
-        case _CARPLAX:
-            oled_write_ln_P(PSTR("Carplax"), false);
-            break;
-        case 11:
-            oled_write_ln_P(PSTR("Numbers"), false);
-            break;
-        case 9:
-            oled_write_ln_P(PSTR("Symbol0"), false);
-            break;
-        case 10:
-            oled_write_ln_P(PSTR("Symbol1"), false);
-            break;
-        default:
-            oled_write_ln_P(PSTR("No clue"), false);
-            break;
-    }
-}
-void render_layer_state(void) {
-    oled_write_ln_P(PSTR("     ACTIVE LAYER"), false);
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("NUM"), layer_state_is(_NUMBERS));
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("SYMB0"), layer_state_is(_SYMBOL0));
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("SYMB1"), layer_state_is(_SYMBOL1));
-    oled_write_P(PSTR(" "), false);
-    oled_write_ln_P(PSTR("ADJ"), layer_state_is(_RAISE));
-
-}
-
-void render_keylock_status(uint8_t led_usb_state) {
-    oled_write_P(PSTR("Lock: "), false);
-    oled_write_P(PSTR("NUM"), led_usb_state & (1 << USB_LED_NUM_LOCK));
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("CAPS"), led_usb_state & (1 << USB_LED_CAPS_LOCK));
-    oled_write_P(PSTR(" "), false);
-    oled_write_ln_P(PSTR("SCL"), led_usb_state & (1 << USB_LED_SCROLL_LOCK));
-}
-
-void render_mod_status(uint8_t modifiers) {
-    oled_write_P(PSTR("Mods: "), false);
-    oled_write_P(PSTR("Sft"), (modifiers & MOD_MASK_SHIFT));
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("Ctl"), (modifiers & MOD_MASK_CTRL));
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("Alt"), (modifiers & MOD_MASK_ALT));
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("GUI"), (modifiers & MOD_MASK_GUI));
-}
-
-void render_bootmagic_status(void) {
-    /* Show Ctrl-Gui Swap options */
-    static const char PROGMEM logo[][2][3] = {
-        {{0x97, 0x98, 0}, {0xb7, 0xb8, 0}},
-        {{0x95, 0x96, 0}, {0xb5, 0xb6, 0}},
-    };
-    oled_write_P(PSTR("Boot  "), false);
-    oled_write_P(logo[0][0], !keymap_config.swap_lctl_lgui);
-    oled_write_P(logo[1][0], keymap_config.swap_lctl_lgui);
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("NKRO"), keymap_config.nkro);
-    oled_write_P(PSTR(" "), false);
-    oled_write_ln_P(PSTR("GUI"), !keymap_config.no_gui);
-    oled_write_P(PSTR("Magic "), false);
-    oled_write_P(logo[0][1], !keymap_config.swap_lctl_lgui);
-    oled_write_P(logo[1][1], keymap_config.swap_lctl_lgui);
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("GRV"), keymap_config.swap_grave_esc);
-    oled_write_P(PSTR("  "), false);
-    oled_write_ln_P(PSTR("CAPS"), keymap_config.swap_control_capslock);
-}
-
-void render_user_status(void) {
-    oled_write_P(PSTR("USER: "), false);
-    oled_write_P(PSTR("Anim"), userspace_config.rgb_matrix_idle_anim);
-    oled_write_P(PSTR(" "), false);
-    oled_write_P(PSTR("Layr"), userspace_config.rgb_layer_change);
-    oled_write_P(PSTR(" "), false);
-    oled_write_ln_P(PSTR("Nuke"), userspace_config.nuke_switch);
-}
 
 // clang-format off
 void render_logo(void) {
@@ -295,7 +189,6 @@ void render_logo(void) {
     oled_write_P(qmk_logo, false);
 }
 
-#    ifndef SPLIT_TRANSPORT_MIRROR
 void render_pejer_logo(void) {
   static const char PROGMEM kyria_logo[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,192,192,192,192,192,192,192,192,192,192,192,192,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -310,40 +203,9 @@ void render_pejer_logo(void) {
 };
     oled_write_raw_P(kyria_logo, sizeof(kyria_logo));
 }
-#    endif
 // clang-format on
 
-void render_status_main(void) {
-    /* Show Keyboard Layout  */
-    //render_pejer_logo();
-    render_layer_state();
-    render_default_layer_state();
-    //render_keylock_status(host_keyboard_leds());
-    //render_bootmagic_status();
-    //render_user_status();
- }
-
-void render_status_secondary(void) {
-    /* Show Keyboard Layout  */
-    render_logo();
-}
-
 void oled_task_user(void) {
-//#    ifndef SPLIT_KEYBOARD
-//    else {
-//        oled_on();
-//    }
-//#    endif
-//    if (is_master) {
-//        render_status_main();  // Renders the current keyboard state (layer, lock, caps, scroll, etc)
-//    } else {
-#    ifdef SPLIT_TRANSPORT_MIRROR
-        //render_status_secondary();
-//        render_pejer_logo();
-#    else
-//        render_pejer_logo();
-#    endif
-//    }
   render_pejer_logo();
 }
 
