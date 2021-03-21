@@ -16,9 +16,17 @@ AUDIO_ENABLE = no          # Audio output on port C6
 FAUXCLICKY_ENABLE = no     # Use buzzer to emulate clicky switches
 HD44780_ENABLE = no        # Enable support for HD44780 based LCDs
 
-POINTING_DEVICE_ENABLE = yes
-TRACKBALL_ENABLE = yes
-
 BOOTLOADER = atmel-dfu
+
+SECONDARY = 0
+ifeq ($(SECONDARY), 1)
+	TRACKBALL_ENABLE = no   # Disables the use of Trackball, since its on the primary half
+	CFLAGS += "-D SECONDARY_SPLIT"
+else
+	POINTING_DEVICE_ENABLE = yes
+	TRACKBALL_ENABLE = yes
+	CFLAGS += "-D PRIMARY_SPLIT"
+endif
+
 #SPLIT_KEYBORD = yes
 #SPLIT_TRANSPORT = mirror
