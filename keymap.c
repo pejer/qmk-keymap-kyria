@@ -62,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_SYMBOL1] = LAYOUT_wrapper(
         KC_ESC,  ___________PEJER_SYMBOL1_L1________________,                                               ___________PEJER_SYMBOL1_R1________________,KC_MINS,
-        KC_BSLS, ___________PEJER_SYMBOL1_L2________________,                                               ___________PEJER_SYMBOL1_R2________________,KC_PRINT_TRUTH,
+        KC_BSLS, ___________PEJER_SYMBOL1_L2________________,                                               ___________PEJER_SYMBOL1_R2________________,KC_QUOT,
         KC_GRV,  ___________PEJER_SYMBOL1_L3________________, KC_NO,ADJUST,             ADJUST,KC_NO,       ___________PEJER_SYMBOL1_R3________________,KC_XXXXX,
 
                                  KC_MUTE, OS_LALT, KC_LOWER,  KC_SPC,  KC_PEJ_BSPC,     KC_PEJ_TAB, KC_ENT,  KC_RAISE,  MO(_RAISE), MO(_RAISE)  \
@@ -98,8 +98,12 @@ layer_state_t layer_state_set_keymap(layer_state_t state) {
             trackball_setrgb(96,24,96);
           break;
       default: //  for any other layers, or the default layer
+        if (user_config.trackball_led_on && rgblight_is_enabled()) {
+          trackball_setrgb(64,64,64);
+        } else {
           trackball_setrgb(0,0,0);
-          break;
+        }
+      break;
     }
 #endif
   return state;
@@ -169,9 +173,27 @@ bool process_record_keymap(uint16_t keycode, keyrecord_t *record) {
          pointing_device_set_report(mouse_report);
          pointing_device_send();
        break;
+      case KC_ACL0: //acceleration!
+        if (record->event.pressed) {
+          user_config.trackball_speed_fast = true;
+        }
+        else
+        {
+          user_config.trackball_speed_fast = false;
+        }
+       break;
+      case KC_SCROLL:
+        if (record->event.pressed) {
+          user_config.trackball_scroll = true;
+        }
+        else
+        {
+          user_config.trackball_scroll = false;
+        }
+       break;
 #endif
     }
-    return true;
+  return true;
 }
 void matrix_init_keymap(void) { is_master = (uint8_t)is_keyboard_master(); }
 
