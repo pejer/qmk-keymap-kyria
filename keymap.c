@@ -86,16 +86,16 @@ layer_state_t layer_state_set_keymap(layer_state_t state) {
 #ifdef PRIMARY_SPLIT
   switch (get_highest_layer(state)) {
       case _RAISE:
-          trackball_setrgb(0,48,0);
+          trackball_setrgb(0,64,0);
           break;
       case _SYMBOL0:
-          trackball_setrgb(0,48,96);
+          trackball_setrgb(0,64,128);
           break;
       case _SYMBOL1:
-          trackball_setrgb(96,48,0);
+          trackball_setrgb(128,64,0);
           break;
       case _NUMBERS:
-            trackball_setrgb(96,24,96);
+            trackball_setrgb(128,32,128);
           break;
       default: //  for any other layers, or the default layer
         if (user_config.trackball_led_on && rgblight_is_enabled()) {
