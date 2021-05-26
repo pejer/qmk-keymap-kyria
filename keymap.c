@@ -84,6 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 report_mouse_t mouse_report;
 layer_state_t layer_state_set_keymap(layer_state_t state) {
 #ifdef PRIMARY_SPLIT
+#ifdef TRACKBALL_ENABLE 
   switch (get_highest_layer(state)) {
       case _RAISE:
           trackball_setrgb(0,64,0);
@@ -105,6 +106,7 @@ layer_state_t layer_state_set_keymap(layer_state_t state) {
         }
       break;
     }
+#endif
 #endif
   return state;
 }
