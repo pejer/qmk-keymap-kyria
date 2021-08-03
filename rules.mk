@@ -26,7 +26,7 @@ ifeq ($(SECONDARY), 1)
 	TRACKBALL_ENABLE 				= no   # Disables the use of Trackball, since its on the primary half
 	CFLAGS 									+= "-D SECONDARY_SPLIT"
 else
-	OLED_DRIVER_ENABLE 			= no   # Enables the use of OLED displays
+	OLED_DRIVER_ENABLE 			= yes   # Enables the use of OLED displays
 	POINTING_DEVICE_ENABLE 	= yes
 	TRACKBALL_ENABLE 				= yes
 	CFLAGS 									+= "-D PRIMARY_SPLIT"
