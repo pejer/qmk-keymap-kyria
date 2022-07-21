@@ -29,6 +29,8 @@ else
 	OLED_DRIVER_ENABLE 			= yes   # Enables the use of OLED displays
 	POINTING_DEVICE_ENABLE 	= yes
 	TRACKBALL_ENABLE 				= yes
+	POINTING_DEVICE_DRIVER = pimoroni_trackball
+
 	CFLAGS 									+= "-D PRIMARY_SPLIT"
 endif
 
