@@ -129,7 +129,7 @@ bool process_record_keymap(uint16_t keycode, keyrecord_t *record) {
     switch(keycode){
 #ifdef PRIMARY_SPLIT
       case KC_BTN1:
-        mouse_report = pointing_device_get_report();
+          mouse_report = pointing_device_get_report();
          if (record->event.pressed)
          {
              mouse_report.buttons |= MOUSE_BTN1; //this is defined in report.h
@@ -204,7 +204,7 @@ bool process_record_keymap(uint16_t keycode, keyrecord_t *record) {
 }
 void matrix_init_keymap(void) { is_master = (uint8_t)is_keyboard_master(); }
 
-#ifdef OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_180; }
 
@@ -234,8 +234,12 @@ void render_pejer_logo(void) {
 }
 // clang-format on
 
-void oled_task_user(void) {
+bool oled_task_user(void) {
+  if (is_keyboard_master()) {
+    return true;
+  }
   render_pejer_logo();
+  return false;
 }
 
 #endif

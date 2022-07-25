@@ -18,11 +18,7 @@
 
 //#define EE_HANDS
 #define MASTER_RIGHT
-#ifdef OLED_DRIVER_ENABLE
-#    define OLED_DISPLAY_128X64
-#    define OLED_FONT_H "font_gmk_bad.h"
-#    define OLED_DISABLE_TIMEOUT
-#    define OLED_SCROLL_TIMEOUT_RIGHT 60000
+#ifdef OLED_ENABLE
 #endif
 
 #ifdef RGBLIGHT_ENABLE
